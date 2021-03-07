@@ -76,6 +76,36 @@ class Deck:
 
         return deck
 
+def prompt_choice():
+    """ Prompt for a choice until a valid response is given. """
+    print()
+    print('What do you want to do?')
+
+    choices = ['stay']
+
+    for i, choice in enumerate(choices):
+        print(f'{i + 1}. {choice}')
+
+    while True:
+        user_choice = input()
+        
+        try:
+            user_choice = int(user_choice)
+        except ValueError:
+            print('Please input an integer.')
+            continue
+
+        if user_choice not in range(1, len(choices) + 1):
+            print('Please input one of the provided choices.')
+            continue
+        
+        break
+
+    choice_str = choices[user_choice - 1]
+    print(f'You chose to {choice_str}.')
+
+    return choice_str
+
 player_cards = []
 dealer_cards = []
 
@@ -87,3 +117,5 @@ dealer_cards.append(deck.pop())
 
 print('Your cards:', ', '.join(map(str, player_cards)))
 print("Dealer's cards:", ', '.join(map(str, dealer_cards)))
+
+prompt_choice()

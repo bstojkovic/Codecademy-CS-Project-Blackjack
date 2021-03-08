@@ -167,6 +167,24 @@ while True:
     choice = prompt_choice(['stay', 'hit'])
     print()
     if choice == 'stay':
+        dealer_hand_value = calculate_hand_value(dealer_cards)
+        player_hand_value = calculate_hand_value(player_cards)
+
+        if dealer_hand_value == player_hand_value:
+            print(
+                "It's a tie. Both the dealer and you "
+                f'have the same hand value of {player_hand_value}.'
+            )
+        elif player_hand_value > dealer_hand_value:
+            print(
+                'You win! Your hand value is '
+                f"{player_hand_value} vs dealer's {dealer_hand_value}."
+            )
+        else:
+            print(
+                'You lose. Your hand value is '
+                f"{player_hand_value} vs dealer's {dealer_hand_value}."
+            )
         break
     elif choice == 'hit':
         card = deck.pop()
@@ -176,5 +194,5 @@ while True:
         hand_value = calculate_hand_value(player_cards)
         if hand_value > 21:
             print()
-            print(f'You have busted with total hand value of {hand_value}.')
+            print(f'You have busted with hand value of {hand_value}.')
             break

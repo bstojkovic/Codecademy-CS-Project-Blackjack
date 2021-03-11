@@ -23,6 +23,7 @@ class Card:
     @property
     def rank_short_str(self):
         """ str: A short representation of the rank of the Card. """
+
         if self.rank <= 8:
             return str(self.rank + 2)
         return ['J', 'Q', 'K', 'A'][self.rank - 9]
@@ -30,6 +31,7 @@ class Card:
     @property
     def rank_long_str(self):
         """ str: A long representation of the rank of the Card. """
+
         return [
             'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
             'nine', 'ten', 'jack', 'queen', 'king', 'ace'
@@ -38,6 +40,7 @@ class Card:
     @property
     def suit_icon_str(self):
         """ str: A unicode icon representation of the suit of the Card. """
+
         return ['♠', '♣', '♦', '♥'][self.suit]
 
     @property
@@ -75,6 +78,7 @@ class Deck:
     @staticmethod
     def random():
         """ Return a standard Deck of 52 cards, suffled. """
+
         cards = []
         for rank in range(13):
             for suit in range(4):
@@ -89,6 +93,8 @@ class Deck:
         return deck
 
 class BasePlayer:
+    """ A representation of a person who can participate in the game. """
+
     def __init__(self):
         self.hand = []
         self.chips = 0
@@ -117,19 +123,25 @@ class BasePlayer:
         return total_card_value
 
 class Dealer(BasePlayer):
+    """ A representation of a card dealer. """
+
     def deal(self, deck, player, player_name):
+        """ Deal a single Card from `deck` to `player`s hand. """
+
         card = deck.pop()
         player.hand.append(card)
         print(f'Dealer deals {player_name} {card}')
 
     def deal_initial(self, deck, player):
+        """ Deal to player and dealer 2 cards each, for game start. """
+
         self.deal(deck, player, 'you')
         self.deal(deck, self, 'himself')
         self.deal(deck, player, 'you')
         self.deal(deck, self, 'himself')
 
 class Player(BasePlayer):
-    pass
+    """ A representation of a blackjack player. """
 
 def prompt_choice(choices):
     """ Prompt for a choice until a valid response is given. """

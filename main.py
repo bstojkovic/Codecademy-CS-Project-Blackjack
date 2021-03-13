@@ -126,7 +126,7 @@ class BasePlayer:
         remaining_amount = amount
 
         self.chips.sort(key=lambda chip: chip.value, reverse=True)
-        for chip in self.chips:
+        for chip in self.chips[:]:
             if chip.value <= remaining_amount:
                 new_stack.append(chip)
                 self.chips.remove(chip)
@@ -265,6 +265,27 @@ def game():
     print('Dealer shuffles a deck of cards.')
     deck = Deck.random()
 
+    print()
+    print('Your chips:')
+    player.print_chips()
+
+    print()
+    print("Dealer's chips:")
+    dealer.print_chips()
+
+    print()
+    print('Place a bet.')
+    choice = prompt_choice(
+        ['bet minimum ($5)', 'bet maximum ($500)']
+    )
+    if choice == 'bet minimum ($5)':
+        player_bet = 5
+    elif choice == 'bet maximum ($500)':
+        player_bet = 500
+
+    player.remove_chips(player_bet)
+
+    print()
     dealer.deal_initial(deck, player)
 
     while True:
@@ -288,7 +309,7 @@ def game():
 
             if dealer_hand_value == player_hand_value:
                 print(
-                    "It's a tie. Both the dealer and you "
+                    "It's a push. Both the dealer and you "
                     f'have the same hand value of {player_hand_value}.'
                 )
             elif player_hand_value > dealer_hand_value:

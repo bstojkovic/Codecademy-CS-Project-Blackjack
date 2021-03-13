@@ -1,3 +1,4 @@
+import math
 import random
 
 class Card:
@@ -285,7 +286,7 @@ def game():
     elif choice == 'bet maximum ($500)':
         player_bet = 500
 
-    player.remove_chips(player_bet)
+    player_bet_chips = player.remove_chips(player_bet)
 
     print()
     dealer.deal_initial(deck, player)
@@ -298,6 +299,11 @@ def game():
         if first_move and player.hand_value == 21:
             print()
             print('You got blackjack! You win.')
+
+            win_amount = math.ceil(player_bet * 3 / 2)
+            win_chips = dealer.remove_chips(win_amount)
+            player.chips += player_bet_chips + win_chips
+            print(f'You win ${win_amount + player_bet}.')
             break
 
         choice = prompt_choice(['stay', 'hit'])
@@ -311,16 +317,24 @@ def game():
                     "It's a push. Both the dealer and you "
                     f'have the same hand value of {player_hand_value}.'
                 )
+
+                player.chips += player_bet_chips
+                print(f'You get your ${player_bet} back.')
             elif player_hand_value > dealer_hand_value:
                 print(
                     'You win! Your hand value is '
                     f"{player_hand_value} vs dealer's {dealer_hand_value}."
                 )
+
+                win_chips = dealer.remove_chips(player_bet)
+                player.chips += player_bet_chips + win_chips
+                print(f'You win ${player_bet * 2}.')
             else:
                 print(
                     'You lose. Your hand value is '
                     f"{player_hand_value} vs dealer's {dealer_hand_value}."
                 )
+                print(f'You lose ${player_bet}.')
             break
         elif choice == 'hit':
             dealer.deal(deck, player, 'you')

@@ -259,6 +259,8 @@ for chip_num, chip_value, chip_type in [
 def game():
     """ Play a single blackjack session. """
 
+    first_move = True
+
     player.hand = []
     dealer.hand = []
 
@@ -290,16 +292,13 @@ def game():
 
     while True:
         print()
-        print('Your chips:')
-        player.print_chips()
-
-        print()
-        print("Dealer's chips:")
-        dealer.print_chips()
-
-        print()
         print('Your hand:', ', '.join(map(str, player.hand)))
         print("Dealer's hand:", ', '.join(map(str, dealer.hand)))
+
+        if first_move and player.hand_value == 21:
+            print()
+            print('You got blackjack! You win.')
+            break
 
         choice = prompt_choice(['stay', 'hit'])
         print()
@@ -331,6 +330,8 @@ def game():
                 print()
                 print(f'You have busted with hand value of {hand_value}.')
                 break
+
+        first_move = False
 
 game()
 

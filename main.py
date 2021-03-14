@@ -113,6 +113,7 @@ class BasePlayer:
 
     def __init__(self):
         self.hand = []
+        self.split_hand = None
         self.chips = []
 
     def remove_chips(self, amount):
@@ -306,7 +307,16 @@ def game():
             print(f'You win ${win_amount + player_bet}.')
             break
 
-        choice = prompt_choice(['stay', 'hit'])
+        game_done = False
+
+        choices = ['stay', 'hit']
+        if len(player.hand) == 2 and player.split_hand is None:
+            card_1_rank = player.hand[0].rank
+            card_2_rank = player.hand[1].rank
+            if card_1_rank == card_2_rank:
+                choices.append('split')
+
+        choice = prompt_choice(choices)
         print()
         if choice == 'stay':
             dealer_hand_value = dealer.hand_value
@@ -335,7 +345,8 @@ def game():
                     f"{player_hand_value} vs dealer's {dealer_hand_value}."
                 )
                 print(f'You lose ${player_bet}.')
-            break
+
+            game_done = True
         elif choice == 'hit':
             dealer.deal(deck, player, 'you')
 
@@ -343,6 +354,27 @@ def game():
             if hand_value > 21:
                 print()
                 print(f'You have busted with hand value of {hand_value}.')
+                game_done = True
+        elif choice == 'split':
+            second_card = player.hand[1]
+            player.hand.remove(second_card)
+            player.split_hand = [second_card]
+
+            player.remove_chips(player_bet)
+
+            dealer.deal(deck, player, 'you')
+
+        if game_done:
+            if player.split_hand is not None:
+                print()
+                print('You have switched to your other hand.')
+
+                player.hand = player.split_hand
+                player.split_hand = None
+
+                print()
+                dealer.deal(deck, player, 'you')
+            else:
                 break
 
         first_move = False

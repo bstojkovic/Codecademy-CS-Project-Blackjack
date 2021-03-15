@@ -309,7 +309,7 @@ def game():
 
         game_done = False
 
-        choices = ['stay', 'hit']
+        choices = ['stand', 'hit', 'double down']
         if len(player.hand) == 2 and player.split_hand is None:
             card_1_rank = player.hand[0].rank
             card_2_rank = player.hand[1].rank
@@ -318,7 +318,13 @@ def game():
 
         choice = prompt_choice(choices)
         print()
-        if choice == 'stay':
+        if choice in ['stand', 'double down']:
+            if choice == 'double down':
+                dealer.deal(deck, player, 'you')
+                player_bet_chips += player.remove_chips(player_bet)
+                player_bet *= 2
+                print()
+
             dealer_hand_value = dealer.hand_value
             player_hand_value = player.hand_value
 

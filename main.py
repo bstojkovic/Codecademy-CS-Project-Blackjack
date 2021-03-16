@@ -202,6 +202,24 @@ class Dealer(BasePlayer):
 class Player(BasePlayer):
     """ A representation of a blackjack player. """
 
+def prompt_number(min_num, max_num, out_of_bound_message=None):
+    while True:
+        number_input = input()
+
+        try:
+            number_input = int(number_input)
+        except ValueError:
+            print('Please input an integer.')
+            continue
+
+        if number_input not in range(min_num, max_num + 1):
+            print(out_of_bound_message)
+            continue
+
+        break
+
+    return number_input
+
 def prompt_choice(choices):
     """ Prompt for a choice until a valid response is given. """
 
@@ -211,25 +229,26 @@ def prompt_choice(choices):
     for i, choice in enumerate(choices):
         print(f'{i + 1}. {choice}')
 
-    while True:
-        user_choice = input()
-
-        try:
-            user_choice = int(user_choice)
-        except ValueError:
-            print('Please input an integer.')
-            continue
-
-        if user_choice not in range(1, len(choices) + 1):
-            print('Please input one of the provided choices.')
-            continue
-
-        break
+    user_choice = prompt_number(
+        1, len(choices), 'Please input one of the provided choices.'
+    )
 
     choice_str = choices[user_choice - 1]
     print(f'You chose to {choice_str}.')
 
     return choice_str
+
+def prompt_bet(min_bet, max_bet):
+    """ Prompt for an integer bet amount until one within bounds is given. """
+
+    print()
+    print('How much do you want to bet?')
+
+    user_bet = prompt_number(
+        min_bet, max_bet, 'Please input a bet within range 5-500.'
+    )
+
+    return user_bet
 
 player = Player()
 dealer = Dealer()
@@ -280,12 +299,14 @@ def game():
     print()
     print('Place a bet.')
     choice = prompt_choice(
-        ['bet minimum ($5)', 'bet maximum ($500)']
+        ['bet minimum ($5)', 'bet custom', 'bet maximum ($500)']
     )
     if choice == 'bet minimum ($5)':
         player_bet = 5
     elif choice == 'bet maximum ($500)':
         player_bet = 500
+    elif choice == 'bet custom':
+        player_bet = prompt_bet(5, 500)
 
     player_bet_chips = player.remove_chips(player_bet)
 

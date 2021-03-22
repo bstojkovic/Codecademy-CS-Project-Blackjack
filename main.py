@@ -322,8 +322,11 @@ for chip_num, chip_value, chip_type in [
 def game():
     """ Play a single blackjack session. """
 
-    if player.chip_value == 0:
-        print('You are all out of chips!')
+    if player.chip_value < 5:
+        if player.chip_value == 0:
+            print('You are all out of chips!')
+        else:
+            print("You don't have enough chips to bet!")
         return
 
     first_move = True
@@ -344,9 +347,21 @@ def game():
 
     print()
     print('Place a bet.')
-    choice = prompt_choice(
-        ['bet minimum ($5)', 'bet custom', 'bet maximum ($500)']
-    )
+    choices = []
+
+    if player.check_bet(5):
+        choices.append('bet minimum ($5)')
+
+    if player.chip_value > 5:
+        choices.append('bet custom')
+
+    if player.chip_value < 500:
+        choices.append('bet all in')
+
+    if player.check_bet(500):
+        choices.append('bet maximum ($500)')
+
+    choice = prompt_choice(choices)
     if choice == 'bet minimum ($5)':
         player_bet = 5
     elif choice == 'bet maximum ($500)':
@@ -356,6 +371,8 @@ def game():
         while not player.check_bet(player_bet):
             print("You don't have needed chips for this bet.")
             player_bet = prompt_bet(5, 500)
+    elif choice == 'bet all in':
+        player_bet = player.chip_value
 
     player_bet_chips = player.remove_chips(player_bet)
 

@@ -116,6 +116,46 @@ class BasePlayer:
         self.split_hand = None
         self.chips = []
 
+    def getchange(coins, amount):
+        """ Determine coin amounts to remove `amount` value from `coins`.
+
+        Function adapted from Stack Overflow answer
+          (https://stackoverflow.com/a/44214561/4936137)
+          by user trincot (https://stackoverflow.com/users/5459839/trincot).
+        Snippet license: CC BY-SA 4.0
+          (https://creativecommons.org/licenses/by-sa/4.0/)
+
+        """
+
+        minCount = None
+
+        def recurse(amount, coinIndex, coinCount):
+            nonlocal minCount
+            if amount == 0:
+                if minCount == None or coinCount < minCount:
+                    minCount = coinCount
+                    return [] # success
+                return None # not optimal
+            if coinIndex >= len(coins):
+                return None # failure
+            bestChange = None
+            coin = coins[coinIndex]
+            # Start by taking as many as possible from this coin
+            cantake = min(amount // coin["value"], coin["count"])
+            # Reduce the number taken from this coin until 0
+            for count in range(cantake, -1, -1):
+                # Recurse, taking out this coin as a possible choice
+                change = recurse(amount - coin["value"] * count, coinIndex + 1,
+                                                                 coinCount + count)
+                # Do we have a solution that is better than the best so far?
+                if change != None:
+                    if count: # Does it involve this coin?
+                        change.append({ "value": coin["value"], "count": count })
+                    bestChange = change # register this as the best so far
+            return bestChange
+
+        return recurse(amount, 0, 0)
+
     def remove_chips(self, amount):
         """ Remove chips from player's stack.
 
